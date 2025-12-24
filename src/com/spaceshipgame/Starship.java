@@ -6,8 +6,7 @@ public class Starship {
     private float maxDefenceStrength;
     private int maxCrewMembers;
     private float maxShipHealth;
-    private Boolean shipDocked;
-
+    private Boolean shipDocked = false;
     private float currentHealth;
     private int currentCrew;
     private float currentAttackStrength;
@@ -46,11 +45,11 @@ public class Starship {
         return currentDefenceStrength;
     }
 
-
-
+    public float getCurrAttStrength() {
+        return currentAttackStrength;
+    }
 
     //methods
-    //TODO
     //Move to a Sector
     //The ship can move into another sector. When a ship moves its current sector
     //changes to reflect the sector it has just moved in to.
@@ -133,44 +132,45 @@ public class Starship {
     //CAN'T ATTACK SHIPS IN THE SAME FLEET
 
 
-    public void attackTargetShip(Starship targetShip) {
-        if (this.isDocked() == Boolean.FALSE &&
-                targetShip.isDocked() == Boolean.FALSE &&
-                this.getSector() == targetShip.getSector() &&
-                this.getFleet() != targetShip.getFleet() &&
-                this.shipCanAct()) {
-
+    public void executeAttackShip(Starship targetShip) {
             float damage = this.currentAttackStrength - currentDefenceStrength;
             if (damage < 5) {
                 damage = 5;
             }
             targetShip.currentHealth -= damage;
-
            int incapCrew = (int) Math.ceil((damage / targetShip.maxShipHealth) * targetShip.maxCrewMembers);
            if  (incapCrew > targetShip.currentCrew) {
                currentCrew = 1;
            }
-
            targetShip.currentCrew -= incapCrew;
-
-
         }
-    }
 
-    public void attackTargetBase(Starbase targetBase) {
-        if (this.getSector() == targetBase.getSector() &&
-                this.getFleet() != targetBase.getFleet() &&
-                this.shipCanAct()) {
 
-            float damage = this.currentAttackStrength - currentDefenceStrength;
+    public void executeAttackBase(Starbase targetBase) {
+            float damage = this.currentAttackStrength - targetBase.getCurrentDefenceStrength();
             if (damage < 5) {
                 damage = 5;
             }
-            float basehp = targetBase.getCurrentHealth();
-            basehp -= damage;
+            targetBase.takeDamage(damage);
         }
+
+
+    public void disable() {
+       myFleet.removeStarship(this);
+        }
+
+        //calculates current defence strength
+    public void calcCurrDefStr() {
+        currentDefenceStrength = (float) Math.ceil((maxDefenceStrength * ((currentHealth + currentCrew) /  (maxShipHealth + maxCrewMembers))));
+    }
+
+    //calculates current attack strength
+    public void calcCurrAttStr() {
+        currentAttackStrength = (float) Math.ceil((maxAttackStrength * ((currentHealth / maxShipHealth))));
+
     }
 }
+
 
 
 

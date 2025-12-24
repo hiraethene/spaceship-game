@@ -16,6 +16,7 @@ public class Starbase {
     private Sector currentSector;
     private Fleet myFleet;
     private List<Starship> dockedStarships;
+    private Boolean disabled = false;
 
     //constructor that initialises the starbase with values for its attributes
 
@@ -37,6 +38,10 @@ public class Starbase {
 
     public float getCurrentHealth() {
         return currentHealth;
+    }
+
+    public float getCurrentDefenceStrength() {
+        return currentDefenceStrength;
     }
 
 
@@ -66,18 +71,31 @@ public class Starbase {
     public void calcCurrDefStr() {
         float sumShipsDefStr = 0f;
         for (Starship ship : dockedStarships) {
-            //ship.getCurrDefStrength();
             sumShipsDefStr += ship.getCurrDefStrength();
         }
         int numDockedShips = dockedStarships.size();
 
-        float CurrDefStr = (float) Math.ceil((maxDefenceStrength * (currentHealth / maxSBaseHealth)) + (sumShipsDefStr * ((float) numDockedShips / maxDefenceStrength)));
-
+        float currentDefenceStrength = (float) Math.ceil((maxDefenceStrength * (currentHealth / maxSBaseHealth)) + (sumShipsDefStr * ((float) numDockedShips / maxDefenceStrength)));
+    }
+    public void takeDamage(float damage) {
+        currentHealth -= damage;
+        checkCurrHealth();
     }
 
-    public void checkCurrHealth(Starship ship) {
-        if (currentHealth == 0) ;
-        {
+    public void checkCurrHealth() {
+        if (!disabled && currentHealth <= 0) {
+            disabled = true;
+
+            //docked starships in the starbase are disabled and removed from play
+            for (Starship starship : dockedStarships) {
+                starship.disable();
+            }
+            dockedStarships.clear();
+
+            //Starbase is disabled and removed from play
+            //removes the starbase from the fleet
+            myFleet.removeStarbase(this);
+
 
         }
     }
