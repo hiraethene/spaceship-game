@@ -1,11 +1,19 @@
+import com.spaceshipgame.Board;
+import com.spaceshipgame.Fleet;
+import com.spaceshipgame.Sector;
+
 public class Main {
     public static void main(String[] args) {
         //we would like you to
         //have some runnable code that, when run, will perform the following sequence of
         //actions (the following sequence does not need to be turn based, you can just
         //trigger each action in the given sequence):
+        Board board = new Board(2, 2);
         //• Creates a “Player 1” fleet with 1 starbase and 3 ships in “Sector 1”.
+        Fleet fleet1 = new Fleet("Player1",3,1, board.getSector("sector1"));
         //• Creates a “Player 2” fleet with 1 starbase and 3 ships in “Sector 2”.
+        Fleet fleet2 = new Fleet("Player2", 3, 1, board.getSector("sector4"));
+       // ship.Dock(base);
         //• Moves all ships in the “Player 1” fleet to “Sector 2”.
         //• Docks two ships from the “Player 2” fleet into the “Player 2” starbase.
         //• Selects one ship from the “Player 1” fleet and uses it to attack the

@@ -1,5 +1,6 @@
 package com.spaceshipgame;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Fleet {
@@ -10,6 +11,22 @@ public class Fleet {
     private List<Starship> starships;
     private List<Starbase> starbases;
 
+    public Fleet(String player, int numShips, int numBases,Sector currSector) {
+        this.player = player;
+        this.starships = new ArrayList<Starship>();
+        this.starbases = new ArrayList<Starbase>();
+        for (int shipID = 0; shipID < numShips; shipID++) {
+            System.out.println(shipID);
+            Starship starship = new Starship(this,30.0f,10.0f,10,100.0f, currSector);
+            starships.add(starship);
+        }
+        for (int numBaseID = 0; numBaseID < numBases; numBaseID++) {
+            System.out.println(numBaseID);
+            Starbase starbase = new Starbase(this,20.0f, 500.0f, currSector);
+            starbases.add(starbase);
+        }
+    }
+
     //methods
     public void mobiliseToSector() {
         //Moves all ships in a fleet to a specific sector. When a fleet is mobilised, all
@@ -19,6 +36,7 @@ public class Fleet {
         //moves ships in a fleet to a specific sector
         //(selection?) when fleet is mobilised all ships within it move to the sector
         //if ship docked, not moved
+
     }
 
     public void attackTarget() {

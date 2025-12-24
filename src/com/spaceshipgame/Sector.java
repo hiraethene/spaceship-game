@@ -1,13 +1,28 @@
 package com.spaceshipgame;
 
 public class Sector {
-    private String name;
+    private String sectorName;
+    private int row;
+    private int column;
 
-    public Sector(String sectorName) {
-        name = sectorName;
+    public Sector(String sectorName, int row, int column) {
+        this.sectorName = sectorName;
+        this.row = row;
+        this.column = column;
+
     }
 
     public String getName() {
-        return name;
+
+        return sectorName;
     }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getColumn() {
+        return column;
+    }
+
 }
