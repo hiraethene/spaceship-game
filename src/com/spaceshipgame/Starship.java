@@ -108,6 +108,10 @@ public class Starship {
                     //skip 1 action
                     actionsToSkip = 1;
                     break;
+                case 4:
+                    //skip 0 actions
+                    actionsToSkip = 0;
+                    break;
             }
             currentHealth = maxShipHealth;
             currentCrew = maxCrewMembers;
@@ -152,10 +156,14 @@ public class Starship {
                 damage = 5;
             }
             targetBase.takeDamage(damage);
+
+            if (targetBase.getCurrentHealth() <=0) {
+                targetBase.disableBase();
+        }
         }
 
 
-    public void disable() {
+    public void disableShip() {
        myFleet.removeStarship(this);
         }
 

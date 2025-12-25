@@ -17,33 +17,80 @@ public class Main {
         //• Moves all ships in the “Player 1” fleet to “Sector 2”.
         fleet1.mobiliseToSector(board.getSector("sector4"));
         System.out.println("Fleet 1 has been mobilised to sector 4");
-        //• Docks two ships from the “Player 2” fleet into the “Player 2” starbase.
-        Starbase base = fleet2.getStarbases().getFirst();
 
-        // Get all undocked ships
-        List<Starship> undockedShips = new ArrayList<>();
-        for (Starship s : fleet2.getStarships()) {
-            if (!s.isDocked()) {
-                undockedShips.add(s);
+        //• Docks two ships from the “Player 2” fleet into the “Player 2” starbase.
+        // Gets first two undocked ships from fleet 2
+        Starbase base2 = fleet2.getStarbases().get(0);
+        int dockedCount = 0;
+        for (Starship ship : fleet2.getStarships()) {
+            ship.dock(base2);
+            dockedCount++;
+
+            //stops docking after two ships
+            if (dockedCount == 2) {
+                break;
             }
         }
 
-        // Pick the first two ships
-        Starship ship1 = undockedShips.get(0);
-        Starship ship2 = undockedShips.get(1);
-
-        ship1.dock(base);
-        ship2.dock(base);
-        System.out.println("Two Player 2 ships docked at their starbase.");
-
+          if (dockedCount < 2) {
+                System.out.println("Not enough undocked ships to dock");
+            } else {
+              System.out.println("Two Player 2 ships docked at their starbase.");
+        }
         //• Selects one ship from the “Player 1” fleet and uses it to attack the
         //remaining undocked starship from the “Player 2” fleet two times.
 
+        //select ship
+        Starship ship1 = fleet1.getStarships().get(0);
+
+        //Find undocked ships from the player 2 fleet
+
+        Starship targetShip = null;
+        for (Starship ship : fleet2.getStarships()) {
+            targetShip = ship;
+        }
+
+        //attack  the ships
+        if (ship1 != null && targetShip != null) {
+            //attack the ships twice, first for critical hit and then for second hit
+            fleet1.attackTargetShip(targetShip);
+            fleet1.attackTargetShip(targetShip);
+            System.out.println("Player 1's ship has attacked player 2's undocked ship twice");
+        }
+        else {
+            System.out.println("Attack failed");
+        }
 
         //• Docks the remaining undocked starship in the “Player 2” fleet with the
         //“Player 2” starbase then repairs it.
 
+        Starship remainingShip = null;
+
+        for (Starship ship : fleet2.getStarships()) {
+            if (!ship.isDocked()) {
+                remainingShip = ship;
+                break;
+            }
+        }
+
+        if (remainingShip != null) {
+            remainingShip.dock(base2);
+            dockedCount++;
+            System.out.println("The remaining undocked starship in player's 2 fleet has been docked.");
+
+            remainingShip.repairShip();
+            System.out.println("Player 2's ship has been repaired.");
+        } else {
+            System.out.println("No undocked ships in  player 2's fleet to dock");
+        }
+
+
         //• Commands all starships in the “Player 1” fleet to attack the “Player 2”
         //starbase (repeatedly, until the “Player 2” starbase is destroyed).
+        while (base2.getCurrentHealth() > 0) {
+            fleet1.attackTargetBase(base2);
+        }
+        System.out.println("Player 2's base has been destroyed");
+
     }
 }

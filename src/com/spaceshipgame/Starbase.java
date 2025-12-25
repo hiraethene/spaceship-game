@@ -88,7 +88,7 @@ public class Starbase {
 
             //docked starships in the starbase are disabled and removed from play
             for (Starship starship : dockedStarships) {
-                starship.disable();
+                starship.disableShip();
             }
             dockedStarships.clear();
 
@@ -98,5 +98,8 @@ public class Starbase {
 
 
         }
+    }
+    public void disableBase() {
+        myFleet.removeStarbase(this);
     }
 }
