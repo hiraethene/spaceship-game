@@ -1,92 +1,157 @@
 package com.spaceshipgame;
-
+/**
+ * This starship class represents a starship object in the spaceship game.
+ * <p>
+ *     Each starship has maximum attack strength, maximum defence strength, maximum crew, maximum health,
+ *     current health, current crew, current attack strength, current defence strength, sector, fleet, and a starbase if it's docked.
+ * </p>
+ *<p>
+ *     A starship can:
+ *     <ul>
+ *         <li>Move to different sectors unless it's docked using {@link #moveToSector(Sector)}.</li>
+ *         <li>Dock and undock from a starbase in the same fleet
+ *         using {@link #dock(Starbase)}  and {@link #undock(Starbase)}. </li>
+ *         <li>Repair while it's docked at a starbase using {@link #repairShip()}.
+ *             Repairing restores its health and crew, skipping actions depending on how low the current health is.</li>
+ *         <li>Attack starships in the same sector using {@link #executeAttackShip(Starship)}. </li>
+ *         <li>Attack starbases in the same sector using{@link #executeAttackBase(Starbase)}.</li>
+ *    </ul>
+ * </p>
+ *<p>
+ *     The starship's current attack and defence strength are calculated based on its current health and crew
+ *     compared to their respective maximum values. If a starship's health reaches 0, it is disabled.
+ *</p>
+ *
+ * @author Kelly
+ * @version 26/12/2025
+ */
 public class Starship {
-    //Attributes ---------------------------------------------------------
-    private float maxAttackStrength;
-    private float maxDefenceStrength;
-    private int maxCrewMembers;
-    private float maxShipHealth;
-    private Boolean shipDocked = false;
+    // Attributes
+    private final float maxAttackStrength;
+    private final float maxDefenceStrength;
+    private final int maxCrew;
+    private final float maxShipHealth;
+    private boolean shipDocked;
     private float currentHealth;
     private int currentCrew;
     private float currentAttackStrength;
     private float currentDefenceStrength;
-    private Fleet myFleet;
+    private final Fleet myFleet;
     private Sector currentSector;
-    //   private Starbase dockedStarbase;
-    private String newSector;
     private int actionsToSkip;
+    private boolean disabled = false;
 
-    //empty constructor
-    public Starship() {
-
+    /**
+     * <p>
+     * This is a constructor that initializes the starship object with specific parameters for the fleet,
+     * max attack strength, max defence strength, max crew, max health and the current sector.
+     * </p>
+     *
+     * @param fleet              the fleet the starship's a part of.
+     * @param maxAttackStrength  the maximum amount of damage a ship could deal to a target when it attacks.
+     * @param maxDefenceStrength the maximum amount of damage a ship could negate when it's attacked.
+     * @param maxCrew            the maximum crew count a ship can hold.
+     * @param maxShipHealth      the maximum health of the ship.
+     * @param currentSector      the sector the ship is currently located in.
+     */
+    public Starship(Fleet fleet, float maxAttackStrength, float maxDefenceStrength, int maxCrew, float maxShipHealth, Sector currentSector) {
+        this.myFleet = fleet;
+        this.maxAttackStrength = maxAttackStrength;
+        this.maxDefenceStrength = maxDefenceStrength;
+        this.maxCrew = maxCrew;
+        this.maxShipHealth = maxShipHealth;
+        this.currentSector = currentSector;
+        this.currentHealth = maxShipHealth;
+        this.currentCrew = maxCrew;
+        this.calcCurrAttStr();
+        this.calcCurrDefStr();
     }
 
-    //constructor that initialises the starship with values for its attributes
-    //add sector later when it's developed
-    public Starship(Fleet fleet, float maxAttStrength, float maxDefStrength, int maxCrew, float maxHealth, Sector currSector) {
-        myFleet = fleet;
-        maxAttackStrength = maxAttStrength;
-        maxDefenceStrength = maxDefStrength;
-        maxCrewMembers = maxCrew;
-        maxShipHealth = maxHealth;
-        currentSector = currSector;
-    }
-
+    // Getters
     public Sector getSector() {
         return currentSector;
     }
-
     public Fleet getFleet() {
         return myFleet;
     }
-
     public float getCurrDefStrength() {
         return currentDefenceStrength;
     }
+    public float getCurrAttStrength() {return currentAttackStrength;}
+    public float getCurrentHealth() {
+        return currentHealth;
+    }
+    public int getCurrentCrew() {
+        return currentCrew;
+    }
+    public int getActionsToSkip() {return actionsToSkip;}
+    public boolean isDocked() {
+        return shipDocked;
+    }
+    public boolean isDisabled() {return disabled;}
 
-    public float getCurrAttStrength() {
-        return currentAttackStrength;
+    /**
+     * Indicates if a ship can act depending on the number of actions it has to skip.
+     *
+     * @return a true or false value.
+     */
+    public boolean shipCanAct() {
+        return actionsToSkip == 0;
     }
 
-    //methods
-    //Move to a Sector
-    //The ship can move into another sector. When a ship moves its current sector
-    //changes to reflect the sector it has just moved in to.
+    public void calcCurrDefStr() {
+        currentDefenceStrength = (float) Math.ceil((maxDefenceStrength * ((currentHealth + currentCrew) / (maxShipHealth + maxCrew))));
+    }
+
+    public void calcCurrAttStr() {
+        currentAttackStrength = (float) Math.ceil((maxAttackStrength * ((currentHealth / maxShipHealth))));
+
+    }
+
+    /**
+     * The ship can move into another sector if it isn't docked.
+     *
+     * @param newSector the sector the ship is moving into.
+     */
     public void moveToSector(Sector newSector) {
         if (!this.isDocked()) {
             currentSector = newSector;
         }
     }
 
-    public Boolean isDocked() {
-        return shipDocked;
-    }
-
-    //Dock with a starbase
+    /**
+     *  Docks the ship with a starbase by calling the dockShip method in starbase.
+     *
+     * @param targetBase the base the ship wants to dock with.
+     */
     public void dock(Starbase targetBase) {
         shipDocked = targetBase.dockShip(this);
     }
 
-    //undock from a starbase
+
+    /**
+     *  Undocks a docked ship from a starbase by calling the undockShip method in starbase.
+     *
+     * @param targetBase the base the ship is undocking from.
+     */
     public void undock(Starbase targetBase) {
         shipDocked = targetBase.undockShip(this);
     }
 
 
-    // When a ship docks with a starbase it can no longer move or attack (until it undocks) but can now
-    //repair.  When a ship is docked with a starbase, it cannot be attacked by another starship.
-
-    //repair
-
-    //The ship can be repaired, restoring its health and crew.
-    //
-    // When a ship is repaired, it’s current health and current crew are restored to their maximum possible value.
-    //However, a ship can only be repaired whilst it is docked in a starbase.
-    //Furthermore, when a ship is repaired it’s temporarily “out of action” whilst it is
-    //being repaired. This means the next X actions that are attempted on the starship
-    //will be “Skipped” until the repairs are complete. The number of actions skipped
-    //are based on how damaged the ship was, see below:
+    /**
+     * Repairs a starship docked at a starbase.
+     *
+     * <p>
+     *     When a starship is repaired, its current health and current crew
+     *     are restored to their maximum possible value.
+     * </p>
+     *
+     * <p>
+     *     After repairs begin the ship is unable to act.This method calculates how many actions
+     *     the starship will skip until the repairs are complete.This is based on how damaged the ship was.
+     * </p>
+     */
     public void repairShip() {
         if (shipDocked) {
 
@@ -114,68 +179,86 @@ public class Starship {
                     break;
             }
             currentHealth = maxShipHealth;
-            currentCrew = maxCrewMembers;
+            currentCrew = maxCrew;
         }
 
     }
 
-    public Boolean shipCanAct() {
-        if (actionsToSkip == 0) {
-            return true;
-        }
-        return false;
-    }
-
-    //attack a target
-    //CHECK IF OPPONENT TARGET IS IN THE SAME SECTOR IF NOT IT CANT BE ATTACKED YEP
-    //
-    //CHECK IF YOU ARE A SHIP THAT'S DOCKED YEP
-    // CHECKS IF SHIP YOU'RE ATTACKING IS DOCKED B4 ATTACKING YEP
-    //CHECK IF SHIP CAN PERFORM ACTIONS YES
-    //CAN'T ATTACK DOCKED SHIPS YEP
-    //CAN'T ATTACK SHIPS IN THE SAME FLEET
-
-
+    /**
+     * Executes a one-off attack against a target ship in the same sector.
+     * <p>
+     *     Damage is calculated using the attacking ship's current attack strength
+     *      and the target ship's current defence strength, with a minimum damage value 5.
+     * </p>
+     *<p>
+     *     When a ship is attacked, crew members are incapacitated based on the damage dealt.
+     *     The target's crew count will never be reduced below 1.
+     *</p>
+     *
+     * @param targetShip the starship being attacked.
+     */
     public void executeAttackShip(Starship targetShip) {
-            float damage = this.currentAttackStrength - currentDefenceStrength;
-            if (damage < 5) {
-                damage = 5;
-            }
-            targetShip.currentHealth -= damage;
-           int incapCrew = (int) Math.ceil((damage / targetShip.maxShipHealth) * targetShip.maxCrewMembers);
-           if  (incapCrew > targetShip.currentCrew) {
-               currentCrew = 1;
-           }
-           targetShip.currentCrew -= incapCrew;
+        if (targetShip.isDisabled()) {
+            return;
         }
 
-
-    public void executeAttackBase(Starbase targetBase) {
-            float damage = this.currentAttackStrength - targetBase.getCurrentDefenceStrength();
-            if (damage < 5) {
-                damage = 5;
-            }
-            targetBase.takeDamage(damage);
-
-            if (targetBase.getCurrentHealth() <=0) {
-                targetBase.disableBase();
+        // Calculates the damage dealt.
+        float damage = this.currentAttackStrength - targetShip.currentDefenceStrength;
+        if (damage < 5) {
+            damage = 5;
         }
+        // Deals the damage to the target ship.
+        targetShip.currentHealth = Math.max(0, targetShip.currentHealth - damage);
+
+        // Calculates the number of incapacitated crew and subtracts it from the starship's current crew.
+        int incapCrew = (int) Math.ceil((damage / targetShip.maxShipHealth) * targetShip.maxCrew);
+        targetShip.currentCrew = Math.max(1, targetShip.currentCrew - incapCrew);
+
+
+        // Recalculate derived stats
+        targetShip.calcCurrAttStr();
+        targetShip.calcCurrDefStr();
+
+        // Disables the ship if its health reaches 0
+        if (targetShip.getCurrentHealth() <= 0) {
+            targetShip.disableShip();
+            System.out.println("Ship has been disabled");
         }
-
-
-    public void disableShip() {
-       myFleet.removeStarship(this);
-        }
-
-        //calculates current defence strength
-    public void calcCurrDefStr() {
-        currentDefenceStrength = (float) Math.ceil((maxDefenceStrength * ((currentHealth + currentCrew) /  (maxShipHealth + maxCrewMembers))));
     }
 
-    //calculates current attack strength
-    public void calcCurrAttStr() {
-        currentAttackStrength = (float) Math.ceil((maxAttackStrength * ((currentHealth / maxShipHealth))));
+    /**
+     * Executes a one-off attack against a target starbase in the same sector.
+     * <p>
+     *     Damage is calculated using the attacking ship's current attack strength
+     *      and the target starbase's current defence strength, with a minimum damage value 5.
+     * </p>
+     *
+     * @param targetBase the starbase being attacked.
+     */
+    public void executeAttackBase(Starbase targetBase) {
+        // Calculates the damage dealt.
+        float damage = this.currentAttackStrength - targetBase.getCurrentDefenceStrength();
+        if (damage < 5) {
+            damage = 5;
+        }
+        // Deals the damage to the target base
+        targetBase.takeDamage(damage);
 
+
+        // Recalculate derived stats
+        targetBase.calcCurrDefStr();
+
+        // Disables the base if its health reaches 0
+        if (targetBase.getCurrentHealth() <= 0) {
+            targetBase.disableBase();
+        }
+    }
+    /**
+     *  Disables the ship by removing it from its fleet.
+     */
+    public void disableShip() {
+        disabled = true;
+        myFleet.removeStarship(this);
     }
 }
 
