@@ -1,6 +1,6 @@
 # Project Spaceship 
-Author: Kelly
-Version: 26/12/2025
+- Author: Kelly
+- Version: 26/12/2025
 
 ## Overview
 
