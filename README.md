@@ -28,7 +28,7 @@ Further developments will include the implementation of a UI and comprehensive J
 
 ## How to run the game actions script
 
-Run the main file and messages that reflect the current game actions will be displayed in the console. 
+Run the main file in the src folder and messages that reflect the current game actions will be displayed in the console. 
 
 ## How to Run this project
 
