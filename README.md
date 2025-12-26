@@ -23,15 +23,17 @@ This project emphasises OOP principles while providing scalable and maintainable
  - Tracks health and crew of starships and starbases. 
  - Console-based action logs for easy debugging and testing. 
 
+## Notes
+Further developments will include the implementation of a UI and comprehensive JUnit testing.
+
 ## How to run the game actions script
 
 Run the main file and messages that reflect the current game actions will be displayed in the console. 
 
 ## How to Run this project
 
-1. Clone the repository:
+Clone the repository:
    ```bash
    git clone https://github.com/hiraethene/spaceship-game
 
-## Notes
-Further developments will include the implementation of a UI and comprehensive JUnit testing. 
+ 
