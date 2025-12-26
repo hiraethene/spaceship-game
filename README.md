@@ -29,8 +29,9 @@ Run the main file and messages that reflect the current game actions will be dis
 
 ## How to Run this project
 
-Clone the repository
-git clone https://github.com/hiraethene/spaceship-game
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/hiraethene/spaceship-game
 
 ## Notes
 Further developments will include the implementation of a UI and comprehensive JUnit testing. 
