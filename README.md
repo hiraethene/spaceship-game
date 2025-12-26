@@ -4,8 +4,8 @@
 
 ## Overview
 
-Project spaceship is a strategic space battle game for 2 players developed as a coding challenge for RSM. This implements necessary logic for the game. 
-This project emphasises OOP principles while providing scalable and maintainable code. 
+Project spaceship is a strategic space battle game for 2 players developed as a coding challenge for RSM. This project implements the logic for the game, emphasiseing
+OOP principles while providing scalable and maintainable code. 
 
 ## Game actions
 - Creates a “Player 1” fleet with 1 starbase and 3 ships in “Sector 1”.
